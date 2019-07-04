@@ -2,7 +2,8 @@
 
 namespace CarlosIO\Geckoboard;
 
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\RequestOptions;
 use CarlosIO\Geckoboard\Widgets\Widget;
 
 /**
@@ -13,9 +14,9 @@ class Client
     const URI = 'https://push.geckoboard.com';
 
     /**
-     * @var \Guzzle\Http\Client
+     * @var HttpClient
      */
-    protected $client;
+    protected $httpClient;
 
     /**
      * @var string
@@ -28,17 +29,19 @@ class Client
     public function __construct()
     {
         $this->api = '';
-        $this->client = new Guzzle(self::URI);
+        $this->httpClient = new HttpClient([
+            'base_uri' => self::URI,
+        ]);
     }
 
     /**
-     * @param array|\Guzzle\Common\Collection $config
+     * @param array $config
      *
      * @return Client $this
      */
-    public function setGuzzleConfig($config)
+    public function setGuzzleConfig(array $config)
     {
-        $this->client->setConfig($config);
+        $this->httpClient = new HttpClient($config);
 
         return $this;
     }
@@ -46,11 +49,11 @@ class Client
     /**
      * @param string|bool $key
      *
-     * @return \Guzzle\Common\Collection|mixed
+     * @return mixed
      */
     public function getGuzzleConfig($key = false)
     {
-        return $this->client->getConfig($key);
+        return $this->httpClient->getConfig($key);
     }
 
     /**
@@ -123,14 +126,14 @@ class Client
      */
     private function pushWidget(Widget $widget)
     {
-        $this->client->post(
+        $this->httpClient->post(
             '/v1/send/'.$widget->getId(),
-            null,
-            json_encode(
-                array(
+            [
+                RequestOptions::JSON => [
                     'api_key' => $this->getApiKey(),
                     'data' => $widget->getData(),
-                )
-            ))->send();
+                ]
+            ]
+        );
     }
 }
