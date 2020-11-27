@@ -1,7 +1,7 @@
 {
     "name": "kega/geckoboard",
     "description": "A PHP library for dealing with Geckoboard API (http://www.geckoboard.com)",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "license": "MIT",
     "authors": [
         {
@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "~7.2.0",
+        "php": "~7.2",
         "guzzlehttp/guzzle": "^6.3.3"
     },
     "require-dev": {
